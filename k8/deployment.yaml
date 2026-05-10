@@ -16,17 +16,17 @@ spec:
     spec:
       containers:
         - name: department
-          image: dayasahu6077/department:5jan
+          image: dayasahu6077/department:6may
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           env:
-            - name: SPRING_CONFIG_IMPORT
-              value: "configserver:http://configserver:8071"
             - name: SPRING_PROFILES_ACTIVE
               value: "dev"
-            - name: SPRING_APPLICATION_NAME
-              value: "department"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
@@ -41,3 +41,7 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: department-config
